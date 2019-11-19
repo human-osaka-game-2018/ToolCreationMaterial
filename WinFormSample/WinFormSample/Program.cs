@@ -1,15 +1,18 @@
-﻿using System;
+using System;
+using System.Windows.Forms;
+using WinFormSample.Presentation;
 
 namespace WinFormSample {
 	static class Program {
 		/// <summary>
-		/// アプリケーションのメイン エントリ ポイントです。
+		///  The main entry point for the application.
 		/// </summary>
 		[STAThread]
 		static void Main() {
-			System.Windows.Forms.Application.EnableVisualStyles();
-			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-			System.Windows.Forms.Application.Run(new Presentation.FrmMenu());
+			Application.SetHighDpiMode(HighDpiMode.SystemAware);
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			Application.Run(new FrmMenu());
 		}
 	}
 }

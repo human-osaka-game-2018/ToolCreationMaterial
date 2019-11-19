@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace WinFormSample.Domain.DomainObjects.Entities {
 	/// <summary>
 	/// プレイヤーのパラメータ格納用データクラス。
 	/// </summary>
-	[Serializable]
+	[DataContract]
 	public partial class PlayerParameter {
 
 		#region enums
@@ -25,27 +26,32 @@ namespace WinFormSample.Domain.DomainObjects.Entities {
 		/// <summary>
 		/// 名前。
 		/// </summary>
+		[DataMember]
 		public string Name { get; set; }
 
 		/// <summary>
 		/// 性別。
 		/// </summary>
 		/// <remarks><c>true</c>: 男性 <c>false</c>: 女性</remarks>
+		[DataMember]
 		public bool IsMale { get; set; }
 
 		/// <summary>
 		/// 初回プレイから使用可能かどうか。
 		/// </summary>
+		[DataMember]
 		public bool IsAvailableOnFirstPlay { get; set; }
 
 		/// <summary>
 		/// 能力のタイプ。
 		/// </summary>
+		[DataMember]
 		public PlayerParameterType ParameterType { get; set; }
 
 		/// <summary>
 		/// 職業。
 		/// </summary>
+		[DataMember]
 		public JobType Job { get; set; }
 		#endregion
 

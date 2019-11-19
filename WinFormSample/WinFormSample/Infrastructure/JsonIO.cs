@@ -1,6 +1,5 @@
 ﻿using System.IO;
-using System.Text;
-using System.Web.Script.Serialization;
+using System.Runtime.Serialization.Json;
 
 namespace WinFormSample.Infrastructures {
 	/// <summary>
@@ -22,16 +21,14 @@ namespace WinFormSample.Infrastructures {
 		/// <typeparam name="T">読み込んだデータを格納する型</typeparam>
 		/// <param name="filePath">読み込むファイルパス</param>
 		/// <returns>読み込んだデータを<typeparamref name="T"/>型のオブジェクトに変換したもの</returns>
-		public static T Read<T>(string filePath) {
-			// ファイル読込
-			var serializer = new JavaScriptSerializer();
-			string jsonText = null;
-			using (var reader = new StreamReader(filePath)) {
-				jsonText = reader.ReadToEnd();
-			}
+		public static T Read<T>(string filePath) where T : class {
+			T ret = default;
 
-			// JSON形式のファイルをオブジェクトに変換
-			var ret = serializer.Deserialize<T>(jsonText);
+			// ファイル読込
+			var serializer = new DataContractJsonSerializer(typeof(T));
+			using (var stream = File.Open(filePath, FileMode.Open)) {
+				ret = serializer.ReadObject(stream) as T;
+			}
 
 			return ret;
 		}
@@ -43,13 +40,12 @@ namespace WinFormSample.Infrastructures {
 		/// <param name="target">出力対象のオブジェクト</param>
 		/// <param name="filePath">出力先ファイルパス</param>
 		public static void Write<T>(T target, string filePath) {
-			// JSON形式に変換
-			var serializer = new JavaScriptSerializer();
-			var json = serializer.Serialize(target);
+			var serializer = new DataContractJsonSerializer(typeof(T));
+			using (var stream = new FileStream(filePath, FileMode.OpenOrCreate)) {
+				// 既存データ削除
+				stream.SetLength(0);
 
-			// ファイルに書き出し
-			using (var writer = new StreamWriter(filePath, false, Encoding.UTF8)) {
-				writer.Write(json);
+				serializer.WriteObject(stream, target);
 			}
 		}
 		#endregion
