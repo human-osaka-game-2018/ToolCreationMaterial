@@ -28,16 +28,12 @@ namespace WinFormSample.Domain.DomainObjects.Entities {
 		/// <param name="type">列挙子</param>
 		/// <returns>表示名</returns>
 		public static string GetDisplayName(this PlayerParameter.PlayerParameterType type) {
-			switch (type) {
-				case PlayerParameter.PlayerParameterType.Power:
-					return "パワー重視";
-				case PlayerParameter.PlayerParameterType.Speed:
-					return "スピード重視";
-				case PlayerParameter.PlayerParameterType.Hp:
-					return "HP大";
-				default:
-					throw new NotImplementedException("${type}は未実装です。");
-			}
+			return type switch {
+				PlayerParameter.PlayerParameterType.Power => "パワー重視",
+				PlayerParameter.PlayerParameterType.Speed => "スピード重視",
+				PlayerParameter.PlayerParameterType.Hp => "HP大",
+				_ => throw new NotImplementedException("${type}は未実装です。")
+			};
 		}
 	}
 

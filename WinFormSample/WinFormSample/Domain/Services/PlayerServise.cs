@@ -16,17 +16,11 @@ namespace WinFormSample.Domain.Services {
 		/// <returns>読み込んだデータを格納したオブジェクト</returns>
 		public PlayerParameter? Load(string filePath) {
 			// 拡張子で判断してデシリアライズ
-			PlayerParameter? ret = null;
-			switch (Path.GetExtension(filePath)?.ToLower()) {
-				case XmlIO.Extension:
-					ret = XmlIO.Read<PlayerParameter>(filePath);
-					break;
-				case JsonIO.Extension:
-					ret = JsonIO.Read<PlayerParameter>(filePath);
-					break;
-			}
-
-			return ret;
+			return Path.GetExtension(filePath)?.ToLower() switch {
+				XmlIO.Extension => XmlIO.Read<PlayerParameter>(filePath),
+				JsonIO.Extension => JsonIO.Read<PlayerParameter>(filePath),
+				_ => null
+			};
 		}
 
 		/// <summary>
