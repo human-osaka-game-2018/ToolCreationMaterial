@@ -22,8 +22,8 @@ namespace WinFormSample.Infrastructures {
 		/// <typeparam name="T">読み込んだデータを格納する型</typeparam>
 		/// <param name="filePath">読み込むファイルパス</param>
 		/// <returns>読み込んだデータを<typeparamref name="T"/>型のオブジェクトに変換したもの</returns>
-		public static T Read<T>(string filePath) where T : class {
-			T ret = default;
+		public static T? Read<T>(string filePath) where T : class {
+			T? ret = default;
 			var serializer = new XmlSerializer(typeof(T));
 			using (var reader = new StreamReader(filePath)) {
 				ret = serializer.Deserialize(reader) as T;

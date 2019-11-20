@@ -27,7 +27,7 @@ namespace WinFormSample.Domain.DomainObjects.Entities {
 		/// 名前。
 		/// </summary>
 		[DataMember]
-		public string Name { get; set; }
+		public string Name { get; set; } = null!;
 
 		/// <summary>
 		/// 性別。

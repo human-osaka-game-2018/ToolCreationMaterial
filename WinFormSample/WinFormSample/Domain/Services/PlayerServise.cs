@@ -14,9 +14,9 @@ namespace WinFormSample.Domain.Services {
 		/// </summary>
 		/// <param name="filePath">ファイルパス</param>
 		/// <returns>読み込んだデータを格納したオブジェクト</returns>
-		public PlayerParameter Load(string filePath) {
+		public PlayerParameter? Load(string filePath) {
 			// 拡張子で判断してデシリアライズ
-			PlayerParameter ret = null;
+			PlayerParameter? ret = null;
 			switch (Path.GetExtension(filePath)?.ToLower()) {
 				case XmlIO.Extension:
 					ret = XmlIO.Read<PlayerParameter>(filePath);

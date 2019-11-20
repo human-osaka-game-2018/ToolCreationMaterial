@@ -21,8 +21,8 @@ namespace WinFormSample.Infrastructures {
 		/// <typeparam name="T">読み込んだデータを格納する型</typeparam>
 		/// <param name="filePath">読み込むファイルパス</param>
 		/// <returns>読み込んだデータを<typeparamref name="T"/>型のオブジェクトに変換したもの</returns>
-		public static T Read<T>(string filePath) where T : class {
-			T ret = default;
+		public static T? Read<T>(string filePath) where T : class {
+			T? ret = default;
 
 			// ファイル読込
 			var serializer = new DataContractJsonSerializer(typeof(T));

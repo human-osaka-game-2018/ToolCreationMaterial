@@ -29,11 +29,7 @@ namespace WinFormSample.Domain.Services {
 
 			// 10件データ生成
 			Enumerable.Range(1, 10).ToList().ForEach(i => {
-				var enemy = new EnemyParameter() {
-					Name = $"enemy{i}",
-					Hp = 100 * i,
-					IsBoss = ((i % 5) == 0)
-				};
+				var enemy = new EnemyParameter($"enemy{i}", 100 * i, ((i % 5) == 0));
 				ret.Add(enemy);
 			});
 
@@ -58,15 +54,11 @@ namespace WinFormSample.Domain.Services {
 		public void Export(DataTable targetDT, string filePath) {
 			// DataTableをListに変換
 			var list = new List<EnemyParameter>();
-			foreach (DataRow dr in targetDT.Rows) {
-				var enemy = new EnemyParameter() {
-					Name = dr["name"].ToString(),
-					Hp = Convert.ToInt32(dr["hp"]),
-					IsBoss = (Convert.ToByte(dr["boss_flag"]) == 1)
-				};
+			targetDT.Rows.OfType<DataRow>().ToList().ForEach(dr => {
+				var enemy = new EnemyParameter(dr["name"].ToString() ?? "", Convert.ToInt32(dr["hp"]), (Convert.ToByte(dr["boss_flag"]) == 1));
 
 				list.Add(enemy);
-			}
+			});
 
 			this.Export(list, filePath);
 		}

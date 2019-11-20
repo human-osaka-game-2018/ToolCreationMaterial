@@ -22,13 +22,13 @@ namespace WinFormSample.Presentation {
 		/// 画面に表示する敵情報リスト。
 		/// </summary>
 		/// <remarks><see cref="IEnumerable{T}"/>を使用するパターン用</remarks>
-		private BindingList<EnemyParameter> enemyParameters;
+		private BindingList<EnemyParameter>? enemyParameters;
 
 		/// <summary>
 		/// 画面に表示する敵情報リスト。
 		/// </summary>
 		/// <remarks><see cref="DataTable"/>を使用するパターン用</remarks>
-		private DataTable enemyDataTable;
+		private DataTable enemyDataTable = null!;
 		#endregion
 
 		#region constructors
