@@ -36,7 +36,7 @@ namespace WinFormSample.Presentation {
 		/// </summary>
 		/// <param name="sender">イベント発行元</param>
 		/// <param name="e">イベントパラメータ</param>
-		private void BtnSave_Click(object sender, EventArgs e) {
+		private async void BtnSave_Click(object sender, EventArgs e) {
 			// 保存ダイアログ表示
 			var dialog = new SaveFileDialog();
 			if (dialog.ShowDialog() == DialogResult.OK) {
@@ -52,7 +52,7 @@ namespace WinFormSample.Presentation {
 					Job = (JobType)this.grbJob.Controls.OfType<RadioButton>().First(x => x.Checked).Tag
 				};
 
-				this.service.Save(player, filePath);
+				await this.service.SaveAsync(player, filePath);
 			}
 		}
 
@@ -61,12 +61,12 @@ namespace WinFormSample.Presentation {
 		/// </summary>
 		/// <param name="sender">イベント発行元</param>
 		/// <param name="e">イベントパラメータ</param>
-		private void BtnLoad_Click(object sender, EventArgs e) {
+		private async void BtnLoad_Click(object sender, EventArgs e) {
 			// ファイルを開くダイアログ表示
 			var dialog = new OpenFileDialog();
 			if (dialog.ShowDialog() == DialogResult.OK) {
 				// ファイル読込
-				var player = this.service.Load(dialog.FileName);
+				var player = await this.service.LoadAsync(dialog.FileName);
 
 				// 読み込めた場合は画面に表示
 				if (player != null) {

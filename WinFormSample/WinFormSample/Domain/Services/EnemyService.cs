@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using WinFormSample.Domain.DomainObjects.Entities;
 using WinFormSample.Infrastructure;
 using WinFormSample.Infrastructures.Database;
@@ -40,8 +41,8 @@ namespace WinFormSample.Domain.Services {
 		/// 敵情報をDBから取得する。
 		/// </summary>
 		/// <returns>取得した敵情報</returns>
-		public DataTable Load() {
-			var dt = this.dao.Select();
+		public async Task<DataTable> LoadAsync() {
+			var dt = await this.dao.SelectAsync();
 			dt.AcceptChanges();
 			return dt;
 		}
@@ -51,7 +52,7 @@ namespace WinFormSample.Domain.Services {
 		/// </summary>
 		/// <param name="targetList">出力対象データ</param>
 		/// <param name="filePath">ファイルパス</param>
-		public void Export(DataTable targetDT, string filePath) {
+		public async Task ExportAsync(DataTable targetDT, string filePath) {
 			// DataTableをListに変換
 			var list = new List<EnemyParameter>();
 			targetDT.Rows.OfType<DataRow>().ToList().ForEach(dr => {
@@ -60,7 +61,7 @@ namespace WinFormSample.Domain.Services {
 				list.Add(enemy);
 			});
 
-			this.Export(list, filePath);
+			await this.ExportAsync(list, filePath);
 		}
 
 		/// <summary>
@@ -68,8 +69,8 @@ namespace WinFormSample.Domain.Services {
 		/// </summary>
 		/// <param name="targetList">出力対象データ</param>
 		/// <param name="filePath">ファイルパス</param>
-		public void Export(IEnumerable<EnemyParameter> targetList, string filePath) {
-			CsvIO.WriteEnemyParameters(targetList, filePath);
+		public Task ExportAsync(IEnumerable<EnemyParameter> targetList, string filePath) {
+			return CsvIO.WriteEnemyParametersAsync(targetList, filePath);
 		}
 
 		/// <summary>
@@ -77,8 +78,8 @@ namespace WinFormSample.Domain.Services {
 		/// </summary>
 		/// <param name="targetList">新規作成データ</param>
 		/// <returns>挿入に成功したかどうか</returns>
-		public bool Save(IEnumerable<EnemyParameter> targetList) {
-			return this.dao.Insert(targetList);
+		public Task<bool> SaveAsync(IEnumerable<EnemyParameter> targetList) {
+			return this.dao.InsertAsync(targetList);
 		}
 
 		/// <summary>
@@ -86,13 +87,13 @@ namespace WinFormSample.Domain.Services {
 		/// </summary>
 		/// <param name="dt">更新データを含む全件データ</param>
 		/// <returns>更新に成功したかどうか</returns>
-		public bool Save(DataTable dt) {
+		public async Task<bool> SaveAsync(DataTable dt) {
 			// 更新対象データのみ抜き出し
 			var targetDt = dt.Copy();
 			var unupdatedRows = targetDt.Rows.Cast<DataRow>().Where(x => x.RowState != DataRowState.Modified);
 			unupdatedRows.ToList().ForEach(x => targetDt.Rows.Remove(x));
 
-			var ret = this.dao.Update(targetDt);
+			var ret = await this.dao.UpdateAsync(targetDt);
 
 			// FIXME: Insertは未実装
 

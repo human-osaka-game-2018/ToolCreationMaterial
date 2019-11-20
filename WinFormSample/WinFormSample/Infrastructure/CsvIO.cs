@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using WinFormSample.Domain.DomainObjects.Entities;
 
 namespace WinFormSample.Infrastructure {
@@ -15,7 +16,7 @@ namespace WinFormSample.Infrastructure {
 		/// </summary>
 		/// <param name="list">出力対象のリスト</param>
 		/// <param name="filePath">出力先ファイルパス</param>
-		public static void WriteEnemyParameters(IEnumerable<EnemyParameter> list, string filePath) {
+		public static async Task WriteEnemyParametersAsync(IEnumerable<EnemyParameter> list, string filePath) {
 			var sb = new StringBuilder();
 
 			// ヘッダ
@@ -33,7 +34,7 @@ namespace WinFormSample.Infrastructure {
 			}
 
 			using (var writer = new StreamWriter(filePath, false, Encoding.UTF8)) {
-				writer.Write(sb.ToString());
+				await writer.WriteAsync(sb.ToString());
 			}
 		}
 

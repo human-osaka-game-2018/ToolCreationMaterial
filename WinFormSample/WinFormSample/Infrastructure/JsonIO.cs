@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Json;
+using System.Threading.Tasks;
 
 namespace WinFormSample.Infrastructures {
 	/// <summary>
@@ -21,13 +22,13 @@ namespace WinFormSample.Infrastructures {
 		/// <typeparam name="T">読み込んだデータを格納する型</typeparam>
 		/// <param name="filePath">読み込むファイルパス</param>
 		/// <returns>読み込んだデータを<typeparamref name="T"/>型のオブジェクトに変換したもの</returns>
-		public static T? Read<T>(string filePath) where T : class {
+		public static async Task<T?> ReadAsync<T>(string filePath) where T : class {
 			T? ret = default;
 
 			// ファイル読込
 			var serializer = new DataContractJsonSerializer(typeof(T));
 			using (var stream = File.Open(filePath, FileMode.Open)) {
-				ret = serializer.ReadObject(stream) as T;
+				await Task.Run(() => ret = serializer.ReadObject(stream) as T);
 			}
 
 			return ret;
@@ -39,13 +40,15 @@ namespace WinFormSample.Infrastructures {
 		/// <typeparam name="T">書き出すオブジェクトの型</typeparam>
 		/// <param name="target">出力対象のオブジェクト</param>
 		/// <param name="filePath">出力先ファイルパス</param>
-		public static void Write<T>(T target, string filePath) {
+		public static async Task WriteAsync<T>(T target, string filePath) {
 			var serializer = new DataContractJsonSerializer(typeof(T));
 			using (var stream = new FileStream(filePath, FileMode.OpenOrCreate)) {
-				// 既存データ削除
-				stream.SetLength(0);
+				await Task.Run(() => {
+					// 既存データ削除
+					stream.SetLength(0);
 
-				serializer.WriteObject(stream, target);
+					serializer.WriteObject(stream, target);
+				});
 			}
 		}
 		#endregion

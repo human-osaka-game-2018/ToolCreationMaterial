@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
 namespace WinFormSample.Infrastructures.Database {
@@ -28,9 +29,9 @@ namespace WinFormSample.Infrastructures.Database {
 		/// コネクションを生成する。
 		/// </summary>
 		/// <returns>生成したコネクション</returns>
-		public static MySqlConnection Create() {
+		public static async Task<MySqlConnection> CreateAsync() {
 			var con = new MySqlConnection(connectionString);
-			con.Open();
+			await con.OpenAsync();
 			return con;
 		}
 

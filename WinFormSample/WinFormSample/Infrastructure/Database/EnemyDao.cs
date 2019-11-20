@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using System.Threading.Tasks;
 using WinFormSample.Domain.DomainObjects.Entities;
 
 namespace WinFormSample.Infrastructures.Database {
@@ -15,14 +16,14 @@ namespace WinFormSample.Infrastructures.Database {
 		/// Enemyテーブルデータを全件取得する。
 		/// </summary>
 		/// <returns>取得したデータ</returns>
-		public DataTable Select() {
+		public async Task<DataTable> SelectAsync() {
 			DataTable ret = new DataTable();
-			using (var con = Connection.Create()) {
+			using (var con = await Connection.CreateAsync()) {
 				var sql = "SELECT * FROM enemy;";
 				var cmd = new MySqlCommand(sql, con);
 				var da = new MySqlDataAdapter(cmd);
 
-				da.Fill(ret);
+				await da.FillAsync(ret);
 				ret.TableName = "enemy";
 			}
 
@@ -34,18 +35,18 @@ namespace WinFormSample.Infrastructures.Database {
 		/// </summary>
 		/// <param name="targetList">挿入対象データ</param>
 		/// <returns><c>true</c>: 成功 <c>false</c>: 失敗</returns>
-		public bool Insert(IEnumerable<EnemyParameter> targetList) {
+		public async Task<bool> InsertAsync(IEnumerable<EnemyParameter> targetList) {
 			var ret = true;
 
 			// トランザクション開始
-			using (var con = Connection.Create())
-			using (var tran = con.BeginTransaction()) {
+			using (var con = await Connection.CreateAsync())
+			using (var tran = await con.BeginTransactionAsync()) {
 				foreach(var target in targetList) {
 					var sql = $"INSERT INTO enemy VALUES(0, '{target.Name}', {target.Hp}, {target.IsBoss});";
 
 					// SQL実行
 					var cmd = new MySqlCommand(sql, con);
-					if (cmd.ExecuteNonQuery() == 0) {
+					if (await cmd.ExecuteNonQueryAsync() == 0) {
 						ret = false;
 						break;
 					}
@@ -53,9 +54,9 @@ namespace WinFormSample.Infrastructures.Database {
 
 				// 全件更新できた場合はコミット
 				if (ret) {
-					tran.Commit();
+					await tran.CommitAsync();
 				} else {
-					tran.Rollback();
+					await tran.RollbackAsync();
 				}
 			}
 
@@ -67,19 +68,19 @@ namespace WinFormSample.Infrastructures.Database {
 		/// </summary>
 		/// <param name="enemyData">更新対象データ</param>
 		/// <returns><c>true</c>: 成功 <c>false</c>: 失敗</returns>
-		public bool Update(DataTable enemyData) {
+		public async Task<bool> UpdateAsync(DataTable enemyData) {
 			var ret = true;
 
 			// SQL生成
 			var sqlList = SqlUtil.CreateUpdateSqlFrom(enemyData);
 
 			// トランザクション開始
-			using (var con = Connection.Create())
-			using (var tran = con.BeginTransaction()) {
+			using (var con = await Connection.CreateAsync())
+			using (var tran = await con.BeginTransactionAsync()) {
 				foreach (var sql in sqlList) {
 					// SQL実行
 					var cmd = new MySqlCommand(sql, con);
-					if (cmd.ExecuteNonQuery() == 0) {
+					if (await cmd.ExecuteNonQueryAsync() == 0) {
 						ret = false;
 						break;
 					}
@@ -87,9 +88,9 @@ namespace WinFormSample.Infrastructures.Database {
 
 				// 全件更新できた場合はコミット
 				if (ret) {
-					tran.Commit();
+					await tran.CommitAsync();
 				} else {
-					tran.Rollback();
+					await tran.RollbackAsync();
 				}
 			}
 

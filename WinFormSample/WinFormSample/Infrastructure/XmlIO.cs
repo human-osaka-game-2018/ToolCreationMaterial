@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace WinFormSample.Infrastructures {
@@ -22,11 +23,11 @@ namespace WinFormSample.Infrastructures {
 		/// <typeparam name="T">読み込んだデータを格納する型</typeparam>
 		/// <param name="filePath">読み込むファイルパス</param>
 		/// <returns>読み込んだデータを<typeparamref name="T"/>型のオブジェクトに変換したもの</returns>
-		public static T? Read<T>(string filePath) where T : class {
+		public static async Task<T?> ReadAsync<T>(string filePath) where T : class {
 			T? ret = default;
 			var serializer = new XmlSerializer(typeof(T));
 			using (var reader = new StreamReader(filePath)) {
-				ret = serializer.Deserialize(reader) as T;
+				await Task.Run(() => ret = serializer.Deserialize(reader) as T);
 			}
 
 			return ret;
@@ -38,12 +39,12 @@ namespace WinFormSample.Infrastructures {
 		/// <typeparam name="T">書き出すオブジェクトの型</typeparam>
 		/// <param name="target">出力対象のオブジェクト</param>
 		/// <param name="filePath">出力先ファイルパス</param>
-		public static void Write<T>(T target, string filePath) {
+		public static async Task WriteAsync<T>(T target, string filePath) {
 			var serializer = new XmlSerializer(typeof(T));
 
 			using (var writer = new StreamWriter(filePath, false, Encoding.UTF8)) {
-				serializer.Serialize(writer, target);
-				writer.Flush();
+				await Task.Run(() => serializer.Serialize(writer, target));
+				await writer.FlushAsync();
 			}
 		}
 		#endregion

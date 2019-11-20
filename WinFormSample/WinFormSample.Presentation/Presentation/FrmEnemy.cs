@@ -46,10 +46,10 @@ namespace WinFormSample.Presentation {
 		/// </summary>
 		/// <param name="sender">イベント発行元</param>
 		/// <param name="e">イベントパラメータ</param>
-		private void FrmEnemy_Load(object sender, EventArgs e) {
+		private async void FrmEnemy_Load(object sender, EventArgs e) {
 			try {
 				// DBからデータを取得して表示
-				this.enemyDataTable = this.service.Load();
+				this.enemyDataTable = await this.service.LoadAsync();
 				this.dgEnemies.DataSource = this.enemyDataTable;
 
 				// DBにデータが存在しない場合のみサンプル表示ボタンを活性化
@@ -76,15 +76,15 @@ namespace WinFormSample.Presentation {
 		/// </summary>
 		/// <param name="sender">イベント発行元</param>
 		/// <param name="e">イベントパラメータ</param>
-		private void BtnExport_Click(object sender, EventArgs e) {
+		private async void BtnExport_Click(object sender, EventArgs e) {
 			var dialog = new SaveFileDialog();
 			if (dialog.ShowDialog() == DialogResult.OK) {
 				switch (this.dgEnemies.DataSource) {
 					case IEnumerable<EnemyParameter> x:
-						this.service.Export(x, dialog.FileName);
+						await this.service.ExportAsync(x, dialog.FileName);
 						break;
 					case DataTable x:
-						this.service.Export(x, dialog.FileName);
+						await this.service.ExportAsync(x, dialog.FileName);
 						break;
 				}
 			}
@@ -95,14 +95,14 @@ namespace WinFormSample.Presentation {
 		/// </summary>
 		/// <param name="sender">イベント発行元</param>
 		/// <param name="e">イベントパラメータ</param>
-		private void BtnSave_Click(object sender, EventArgs e) {
+		private async void BtnSave_Click(object sender, EventArgs e) {
 			var isSuccess = false;
 			switch (this.dgEnemies.DataSource) {
 				case IEnumerable<EnemyParameter> x:
-					isSuccess = this.service.Save(x);
+					isSuccess = await this.service.SaveAsync(x);
 					break;
 				case DataTable x:
-					isSuccess = this.service.Save(x);
+					isSuccess = await this.service.SaveAsync(x);
 					break;
 			}
 
