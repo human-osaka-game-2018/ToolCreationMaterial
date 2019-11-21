@@ -33,7 +33,7 @@ namespace WinFormSample.Infrastructure {
 				sb.Append(Environment.NewLine);
 			}
 
-			using (var writer = new StreamWriter(filePath, false, Encoding.UTF8)) {
+			await using (var writer = new StreamWriter(filePath, false, Encoding.UTF8)) {
 				await writer.WriteAsync(sb.ToString());
 			}
 		}

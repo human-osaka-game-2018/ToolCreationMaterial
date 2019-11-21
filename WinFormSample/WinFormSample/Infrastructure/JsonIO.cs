@@ -27,7 +27,7 @@ namespace WinFormSample.Infrastructures {
 
 			// ファイル読込
 			var serializer = new DataContractJsonSerializer(typeof(T));
-			using (var stream = File.Open(filePath, FileMode.Open)) {
+			await using (var stream = File.Open(filePath, FileMode.Open)) {
 				await Task.Run(() => ret = serializer.ReadObject(stream) as T);
 			}
 
@@ -42,7 +42,7 @@ namespace WinFormSample.Infrastructures {
 		/// <param name="filePath">出力先ファイルパス</param>
 		public static async Task WriteAsync<T>(T target, string filePath) {
 			var serializer = new DataContractJsonSerializer(typeof(T));
-			using (var stream = new FileStream(filePath, FileMode.OpenOrCreate)) {
+			await using (var stream = new FileStream(filePath, FileMode.OpenOrCreate)) {
 				await Task.Run(() => {
 					// 既存データ削除
 					stream.SetLength(0);

@@ -42,7 +42,7 @@ namespace WinFormSample.Infrastructures {
 		public static async Task WriteAsync<T>(T target, string filePath) {
 			var serializer = new XmlSerializer(typeof(T));
 
-			using (var writer = new StreamWriter(filePath, false, Encoding.UTF8)) {
+			await using (var writer = new StreamWriter(filePath, false, Encoding.UTF8)) {
 				await Task.Run(() => serializer.Serialize(writer, target));
 				await writer.FlushAsync();
 			}

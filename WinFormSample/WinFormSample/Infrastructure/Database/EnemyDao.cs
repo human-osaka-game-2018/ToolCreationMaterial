@@ -1,8 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Threading.Tasks;
 using WinFormSample.Domain.DomainObjects.Entities;
 
@@ -18,7 +16,7 @@ namespace WinFormSample.Infrastructures.Database {
 		/// <returns>取得したデータ</returns>
 		public async Task<DataTable> SelectAsync() {
 			DataTable ret = new DataTable();
-			using (var con = await Connection.CreateAsync()) {
+			await using (var con = await Connection.CreateAsync()) {
 				var sql = "SELECT * FROM enemy;";
 				var cmd = new MySqlCommand(sql, con);
 				var da = new MySqlDataAdapter(cmd);
@@ -39,8 +37,8 @@ namespace WinFormSample.Infrastructures.Database {
 			var ret = true;
 
 			// トランザクション開始
-			using (var con = await Connection.CreateAsync())
-			using (var tran = await con.BeginTransactionAsync()) {
+			await using (var con = await Connection.CreateAsync())
+			await using (var tran = await con.BeginTransactionAsync()) {
 				foreach(var target in targetList) {
 					var sql = $"INSERT INTO enemy VALUES(0, '{target.Name}', {target.Hp}, {target.IsBoss});";
 
@@ -75,8 +73,8 @@ namespace WinFormSample.Infrastructures.Database {
 			var sqlList = SqlUtil.CreateUpdateSqlFrom(enemyData);
 
 			// トランザクション開始
-			using (var con = await Connection.CreateAsync())
-			using (var tran = await con.BeginTransactionAsync()) {
+			await using (var con = await Connection.CreateAsync())
+			await using (var tran = await con.BeginTransactionAsync()) {
 				foreach (var sql in sqlList) {
 					// SQL実行
 					var cmd = new MySqlCommand(sql, con);
