@@ -1,7 +1,7 @@
-﻿using MySql.Data.MySqlClient;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 using WinFormSample.Domain.DomainObjects.Entities;
 
 namespace WinFormSample.Infrastructures.Database {
@@ -18,8 +18,8 @@ namespace WinFormSample.Infrastructures.Database {
 			DataTable ret = new DataTable();
 			await using (var con = await Connection.CreateAsync()) {
 				var sql = "SELECT * FROM enemy;";
-				var cmd = new MySqlCommand(sql, con);
-				var da = new MySqlDataAdapter(cmd);
+				using var cmd = new MySqlCommand(sql, con);
+				using var da = new MySqlDataAdapter(cmd);
 
 				await da.FillAsync(ret);
 				ret.TableName = "enemy";
@@ -43,7 +43,7 @@ namespace WinFormSample.Infrastructures.Database {
 					var sql = $"INSERT INTO enemy VALUES(0, '{target.Name}', {target.Hp}, {target.IsBoss});";
 
 					// SQL実行
-					var cmd = new MySqlCommand(sql, con);
+					using var cmd = new MySqlCommand(sql, con);
 					if (await cmd.ExecuteNonQueryAsync() == 0) {
 						ret = false;
 						break;
@@ -77,7 +77,7 @@ namespace WinFormSample.Infrastructures.Database {
 			await using (var tran = await con.BeginTransactionAsync()) {
 				foreach (var sql in sqlList) {
 					// SQL実行
-					var cmd = new MySqlCommand(sql, con);
+					using var cmd = new MySqlCommand(sql, con);
 					if (await cmd.ExecuteNonQueryAsync() == 0) {
 						ret = false;
 						break;
